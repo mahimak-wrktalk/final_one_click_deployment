@@ -1,0 +1,11 @@
+backend:
+  image:
+    repository: ghcr.io/myorg/backend
+    tag: v1.2.3
+  replicaCount: 5
+
+media:
+  image:
+    repository: ghcr.io/myorg/media
+    tag: v1.2.3
+  replicaCount: 3

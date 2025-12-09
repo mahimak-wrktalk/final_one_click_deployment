@@ -1,0 +1,4 @@
+backend:
+  image:
+    repository: nginx
+    tag: latest

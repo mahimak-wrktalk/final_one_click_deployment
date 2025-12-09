@@ -1,0 +1,4 @@
+apiVersion: v2
+name: wrktalk
+version: 2.5.0
+description: Test chart

@@ -1,0 +1,2 @@
+[console_scripts]
+wrktalk-agent = wrktalk_agent.__main__:main

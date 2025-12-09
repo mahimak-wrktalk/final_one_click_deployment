@@ -1,0 +1,11 @@
+backend:
+  image:
+    repository: nginx
+    tag: latest
+  replicaCount: 3
+
+media:
+  image:
+    repository: nginx
+    tag: latest
+  replicaCount: 2
