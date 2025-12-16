@@ -2,7 +2,6 @@
 
 import asyncio
 import threading
-import time
 from typing import Optional
 
 import structlog
@@ -13,15 +12,15 @@ logger = structlog.get_logger()
 class HeartbeatThread:
     """Background thread to send task heartbeats during long-running operations."""
 
-    def __init__(self, backend, task_id: str, interval: int = 60):
+    def __init__(self, repo, task_id: str, interval: int = 60):
         """Initialize heartbeat thread.
 
         Args:
-            backend: BackendClient instance
+            repo: AgentRepository instance (replaces BackendClient)
             task_id: Task ID to send heartbeats for
             interval: Heartbeat interval in seconds
         """
-        self.backend = backend
+        self.repo = repo
         self.task_id = task_id
         self.interval = interval
         self._stop_event = threading.Event()
@@ -44,17 +43,14 @@ class HeartbeatThread:
         """Heartbeat loop running in background thread."""
         while not self._stop_event.is_set():
             # Wait for interval or until stop event is set
-            self._stop_event.wait(self.interval)
+            if self._stop_event.wait(self.interval):
+                break  # Stop event was set during wait
 
-            if not self._stop_event.is_set():
-                try:
-                    # Run async call in sync context
-                    loop = asyncio.new_event_loop()
-                    asyncio.set_event_loop(loop)
-                    loop.run_until_complete(self.backend.send_heartbeat(self.task_id))
-                    loop.close()
-                    logger.debug("heartbeat.sent", task_id=self.task_id)
-                except Exception as e:
-                    logger.warning(
-                        "heartbeat.failed", task_id=self.task_id, error=str(e)
-                    )
+            try:
+                # Use asyncio.run() which properly manages event loop lifecycle
+                asyncio.run(self.repo.update_heartbeat(self.task_id))
+                logger.debug("heartbeat.sent", task_id=self.task_id)
+            except Exception as e:
+                logger.warning(
+                    "heartbeat.failed", task_id=self.task_id, error=str(e)
+                )

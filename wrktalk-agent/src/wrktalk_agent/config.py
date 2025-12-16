@@ -16,19 +16,33 @@ class DeploymentType(str, Enum):
 class AgentConfig(BaseSettings):
     """Agent configuration from environment variables."""
 
-    # Backend connection
-    backend_url: str = Field(
-        default="http://localhost:3000",
-        description="WrkTalk Backend URL"
+    # Database Configuration (NEW - replaces HTTP backend)
+    db_host: str = Field(
+        default="localhost",
+        description="PostgreSQL host"
     )
-    backend_timeout: int = Field(
-        default=30,
-        description="HTTP timeout in seconds"
+    db_port: int = Field(
+        default=5432,
+        description="PostgreSQL port"
     )
-    agent_secret: str = Field(
-        default="agent-secret-key",
-        description="Secret key for authenticating with Backend"
+    db_name: str = Field(
+        default="wrktalk",
+        description="PostgreSQL database name"
     )
+    db_user: str = Field(
+        default="postgres",
+        description="PostgreSQL username"
+    )
+    db_password: str = Field(
+        default="password",
+        description="PostgreSQL password"
+    )
+    db_ssl_mode: str = Field(
+        default="prefer",
+        description="PostgreSQL SSL mode (disable, prefer, require)"
+    )
+
+    # Agent Settings
     poll_interval: int = Field(
         default=30,
         description="Poll interval in seconds"
@@ -64,32 +78,16 @@ class AgentConfig(BaseSettings):
         description="Docker Compose working directory"
     )
 
-    # MinIO settings
-    minio_endpoint: str = Field(
-        default="localhost:9000",
-        description="MinIO endpoint (without http://)"
-    )
-    minio_access_key: str = Field(
-        default="admin",
-        description="MinIO access key"
-    )
-    minio_secret_key: str = Field(
-        default="admin123",
-        description="MinIO secret key"
-    )
-    minio_bucket_name: str = Field(
-        default="wrktalk-artifacts",
-        description="MinIO bucket name"
-    )
-    minio_secure: bool = Field(
-        default=False,
-        description="Use HTTPS for MinIO"
-    )
-
     # Task heartbeat
     heartbeat_interval: int = Field(
         default=60,
         description="Task heartbeat interval in seconds"
+    )
+
+    # Maintenance mode
+    maintenance_mode_handler: str = Field(
+        default="nginx",
+        description="Maintenance mode handler (nginx or haproxy)"
     )
 
     # Logging
@@ -102,3 +100,16 @@ class AgentConfig(BaseSettings):
         """Pydantic config."""
         env_prefix = "WRKTALK_AGENT_"
         case_sensitive = False
+
+    @property
+    def database_url(self) -> str:
+        """Construct PostgreSQL connection URL.
+
+        Returns:
+            PostgreSQL DSN string
+        """
+        return (
+            f"postgresql://{self.db_user}:{self.db_password}"
+            f"@{self.db_host}:{self.db_port}/{self.db_name}"
+            f"?sslmode={self.db_ssl_mode}"
+        )

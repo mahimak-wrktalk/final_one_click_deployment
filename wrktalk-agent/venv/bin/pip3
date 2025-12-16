@@ -1,4 +1,4 @@
-#!/Users/admin/Documents/vscode_testing/one_click_new_n/wrktalk-agent/venv/bin/python3.11
+#!/Users/admin/Documents/vscode_testing/one_click_new_n/wrktalk-agent/venv/bin/python3.13
 import sys
 from pip._internal.cli.main import main
 if __name__ == '__main__':

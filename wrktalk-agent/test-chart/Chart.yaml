@@ -1,4 +1,6 @@
 apiVersion: v2
-name: wrktalk
-version: 2.5.0
-description: Test chart
+name: wrktalk-test-broken
+description: Broken chart for rollback testing
+type: application
+version: 4.0.0
+appVersion: "4.0.0"

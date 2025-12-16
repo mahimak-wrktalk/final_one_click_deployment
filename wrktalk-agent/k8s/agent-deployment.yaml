@@ -63,11 +63,16 @@ metadata:
   name: wrktalk-agent-config
   namespace: wrktalk
 data:
-  # Backend Configuration
-  WRKTALK_AGENT_BACKEND_URL: "http://host.minikube.internal:3000"
-  WRKTALK_AGENT_AGENT_SECRET: "agent-secret-key"
-  WRKTALK_AGENT_POLL_INTERVAL: "10"
-  WRKTALK_AGENT_BACKEND_TIMEOUT: "30"
+  # Database Configuration (NEW - replaces Backend HTTP and MinIO)
+  WRKTALK_AGENT_DB_HOST: "postgres.wrktalk.svc.cluster.local"
+  WRKTALK_AGENT_DB_PORT: "5432"
+  WRKTALK_AGENT_DB_NAME: "wrktalk"
+  WRKTALK_AGENT_DB_USER: "wrktalk_user"
+  WRKTALK_AGENT_DB_PASSWORD: "wrktalk_password"
+  WRKTALK_AGENT_DB_SSL_MODE: "disable"  # Within cluster, SSL not needed
+
+  # Agent Settings
+  WRKTALK_AGENT_POLL_INTERVAL: "30"
 
   # Deployment Type
   WRKTALK_AGENT_DEPLOYMENT_TYPE: "kubernetes"
@@ -77,15 +82,11 @@ data:
   WRKTALK_AGENT_HELM_RELEASE_NAME: "wrktalk"
   WRKTALK_AGENT_HELM_TIMEOUT: "10m"
 
-  # MinIO Configuration
-  WRKTALK_AGENT_MINIO_ENDPOINT: "host.minikube.internal:9000"
-  WRKTALK_AGENT_MINIO_ACCESS_KEY: "admin"
-  WRKTALK_AGENT_MINIO_SECRET_KEY: "admin123"
-  WRKTALK_AGENT_MINIO_BUCKET_NAME: "wrktalk-artifacts"
-  WRKTALK_AGENT_MINIO_SECURE: "false"
-
   # Heartbeat
   WRKTALK_AGENT_HEARTBEAT_INTERVAL: "60"
+
+  # Maintenance Mode
+  WRKTALK_AGENT_MAINTENANCE_MODE_HANDLER: "nginx"
 
   # Logging
   WRKTALK_AGENT_LOG_LEVEL: "DEBUG"
@@ -112,7 +113,7 @@ spec:
       serviceAccountName: wrktalk-agent
       containers:
       - name: agent
-        image: wrktalk-agent:latest
+        image: wrktalk-agent:v4.2-final
         imagePullPolicy: Never  # For minikube testing
         envFrom:
         - configMapRef:

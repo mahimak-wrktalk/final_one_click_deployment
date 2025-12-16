@@ -1,4 +1,1 @@
-backend:
-  image:
-    repository: nginx
-    tag: latest
+replicaCount: 1

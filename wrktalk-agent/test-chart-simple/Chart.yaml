@@ -1,0 +1,6 @@
+apiVersion: v2
+name: wrktalk-test
+description: Test chart for WrkTalk agent
+type: application
+version: 6.0.0
+appVersion: "6.0.0"

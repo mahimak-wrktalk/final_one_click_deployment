@@ -12,7 +12,7 @@ def main():
     """Main entry point."""
     # Load configuration
     config = AgentConfig()
-
+    
     # Setup logging
     setup_logging(config.log_level)
 

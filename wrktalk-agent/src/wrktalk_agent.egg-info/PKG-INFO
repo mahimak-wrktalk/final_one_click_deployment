@@ -6,10 +6,8 @@ Author: WrkTalk Engineering
 Requires-Python: >=3.11
 Requires-Dist: pydantic==2.5.0
 Requires-Dist: pydantic-settings==2.1.0
-Requires-Dist: httpx==0.25.2
 Requires-Dist: structlog==23.2.0
-Requires-Dist: minio==7.2.0
-Requires-Dist: asyncio==3.4.3
+Requires-Dist: asyncpg==0.29.0
 Requires-Dist: typing-extensions==4.9.0
 Dynamic: author
 Dynamic: requires-dist

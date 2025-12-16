@@ -1,17 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wrktalk-backend
+  name: {{ .Values.invalidSyntax   # <-- missing closing braces
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app: wrktalk
-  template:
-    metadata:
-      labels:
-        app: wrktalk
-    spec:
-      containers:
-      - name: backend
-        image: {{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}
